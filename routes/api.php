@@ -14,9 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::get('/error',[UserController::class,'error'])->name('error');
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::post('/register',[UserController::class,'register']);
 Route::post('/login',[UserController::class,'login']);
+$router->group(['middleware' => 'auth:api'], function () use ($router) {
+    Route::post('/logout',[UserController::class,'logout']);
+});

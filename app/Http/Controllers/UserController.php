@@ -6,23 +6,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use HasApiTokens;
+use Laravel\Passport\RefreshToken;
+use Laravel\Passport\Token;
 class UserController extends Controller
 {
     public function register(Request $request){
-        // $validated = $request->validate([
-        //     'name' => 'required|max:255',
-        //     'email' => 'required',
-        //     'password' => [
-        //         'required',
-        //         'string',
-        //         'min:10',             // must be at least 10 characters in length
-        //         'regex:/[a-z]/',      // must contain at least one lowercase letter
-        //         'regex:/[A-Z]/',      // must contain at least one uppercase letter
-        //         'regex:/[0-9]/',      // must contain at least one digit
-        //         'regex:/[@$!%*#?&]/', // must contain a special character
-        //     ],
-        // ]);
+        
         $response = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
@@ -42,14 +32,7 @@ class UserController extends Controller
 
     public function login(Request $request){
        
-        // if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
-        //     $user = Auth::user();
-            
-         
-        //     $success['token'] = $user->createToken('myApp')->accessToken;
-        //    return   $success['token'];
-            
-        // }
+       
         $user=  User::where([
             'email'=>$request->email,
             'password'=> Hash::check('plain-text', $request->password)
@@ -65,5 +48,50 @@ class UserController extends Controller
                 'massage'=>'login faild'
             ]);
         }
+    }
+
+    public function logout(Request $request){
+
+
+        //current token expiry
+            // Auth::user()->token()->delete();
+            // return response()->json([
+            //     'message' => 'Successfully logged out'
+            // ]);
+
+        //all token expiry
+            // Auth::user()->token()->revoke();
+            // return response()->json([
+            //     'message' => 'Successfully logged out'
+            // ]);
+
+
+        //current token delete
+            $res = Auth::user()->token()->delete();
+            if($res){
+                return response()->json([
+                    'massage'=>'logout'
+                ]);
+            }else{
+                return response()->json([
+                    'massage'=>'logout faild'
+                ]);  
+            }
+
+        //all token delete
+            // $res = Auth::user()->tokens->each(function($token,$key){
+            //     $token->delete();
+            // });
+            // if($res){
+            //     return 'logout';
+            // }else{
+            //     return 'faild';
+            // }
+        
+    }
+    public function error(){
+        return response()->json([
+            'massage'=> 'token expiry'
+        ]);
     }
 }
