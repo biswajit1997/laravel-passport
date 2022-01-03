@@ -24,10 +24,10 @@ Route::get('/', function () {
 });
 Route::get('/login', function () {
     return view('auth.login');
-});
+})->middleware('authcheck');
 Route::get('/register', function () {
     return view('auth.register');
-});
+})->middleware('authcheck');
 
 
 Route::post('/register',[UserController::class,'register'])->name('register');
