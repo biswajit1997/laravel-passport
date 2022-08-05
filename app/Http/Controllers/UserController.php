@@ -89,6 +89,13 @@ class UserController extends Controller
             // }
         
     }
+    public function data(){
+        $userData = Auth::user();
+        return response()->json([
+            'userData'=>$userData
+        ]);
+        
+    }
     public function error(){
         return response()->json([
             'massage'=> 'token expiry'
